@@ -1,0 +1,22 @@
+{
+  "name": "metalsmith-responsive-images",
+  "version": "1.0.0",
+  "description": "Create a collection of output images from a single input image.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Simon Elvery",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^0.9.0",
+    "clone": "^1.0.1",
+    "concat-stream": "^1.4.7",
+    "im": "^0.2.3",
+    "lodash": "^3.4.0",
+    "sharp": "^0.9.3",
+    "stream-to-array": "^2.0.2",
+    "streamifier": "^0.1.0",
+    "streamify": "^0.2.4"
+  }
+}
