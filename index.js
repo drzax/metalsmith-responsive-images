@@ -1,12 +1,7 @@
 
 var im;
 
-im = require('im');
 clone = require('clone');
-toArray = require('stream-to-array');
-stream = require('stream');
-streamifier = require('streamifier');
-concat = require('concat-stream');
 async = require('async');
 sharp = require('sharp');
 
@@ -23,8 +18,6 @@ function responsiveImagesFactory(settings){
 
 		input.forEach(function(image){
 			settings.sizes.forEach(function(size){
-
-				// filename = image.key.replace(/\/([^\/]*)$/, '/'+size.name+'-$1');
 				filename = image.key.replace(new RegExp(path.extname(image.key)+'$'),'-'+size.name+'$&');
 				output.push({
 					src: image.key,
@@ -35,28 +28,24 @@ function responsiveImagesFactory(settings){
 		});
 
 		async.each(output, function(image, done){
-			sharp(data[image.src])
-				.resize([image.size.width, image.size.height])
+			sharp(data[image.src].contents)
+				.resize(image.size.width, image.size.height)
+				.withoutEnlargement()
+				.toBuffer(function(err, outputBuffer, info) {
+
+					if (err) {
+					  throw err;
+					}
+					data[image.dest] = clone(data[image.src]);
+					data[image.dest].contents = outputBuffer;
+					done();
+				});
 		}, function(){
 			done()
 		});
 	}
 
 }
-
-function resize(imageBuffer, width, done) {
-	var readStream, writeStream;
-
-	readStream = streamifier.createReadStream(imageBuffer);
-	writeStream = concat(function(buf){
-		done(buf);
-	});
-
-	im(readStream)
-		.resize(width)
-		.convert(writeStream);
-}
-
 
 function isImage(file) {
 	// console.log(path.extname(file.key));
