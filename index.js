@@ -8,6 +8,7 @@ stream = require('stream');
 streamifier = require('streamifier');
 concat = require('concat-stream');
 async = require('async');
+sharp = require('sharp');
 
 module.exports = responsiveImagesFactory;
 
@@ -34,15 +35,9 @@ function responsiveImagesFactory(settings){
 		});
 
 		async.each(output, function(image, done){
-
-			resize(data[image.src], image.size.width, function(buff){
-				image.value.contents = buff;
-				data[image.dest] = image.value;
-				done();
-			});
-
+			sharp(data[image.src])
+				.resize([image.size.width, image.size.height])
 		}, function(){
-			console.log(data);
 			done()
 		});
 	}
